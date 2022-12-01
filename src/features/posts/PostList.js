@@ -1,6 +1,7 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import PostAuthor from "./PostAuthor";
+import PostReaction from "./PostReaction";
 import TimeAgo from "./TimeAgo";
 
 const PostList = () => {
@@ -16,6 +17,7 @@ const PostList = () => {
         <PostAuthor userId={post.userId} />
         <TimeAgo timeStamps={post.date} />
       </div>
+      <PostReaction post={post}/>
     </div>
   ));
   return <div>{renderPost}</div>;
