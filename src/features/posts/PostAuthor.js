@@ -4,10 +4,10 @@ import { selectAllUsers } from '../users/usersSlice'
 
 const PostAuthor = ({userId}) => {
     const users = useSelector(selectAllUsers)
-    const user = users.find(user => user.id = userId)
+    const user = users.find(user => user.id === userId)
   return (
     <div>
-        <p>Posted By: me</p>
+        <p className='font-mono'>Posted By: {user&&userId?user.name:"Unknow User"}</p>
     </div>
   )
 }
