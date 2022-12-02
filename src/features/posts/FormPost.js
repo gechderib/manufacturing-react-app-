@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { selectAllUsers } from "../users/usersSlice";
-import { postAdded } from "./postsSlice";
+import { addNewPost, postAdded } from "./postsSlice";
 
 const FormPost = () => {
   const users = useSelector(selectAllUsers);
@@ -9,12 +9,13 @@ const FormPost = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [userId, setUserId] = useState("")
+  const [requestStatus, setRequestStatus] = useState("idle")
 
   const onTitleChange = (e) => setTitle(e.target.value);
   const onContentChange = (e) => setContent(e.target.value);
   const onAuthorChange = (e) => setUserId(e.target.value);
 
-  const canSave = Boolean(title) && Boolean(content);
+  const canSave = [title,content, userId].every(Boolean) && requestStatus === "idle";
 
   const renderUsers = users.map((user) => (
     <option className="" key={user.id} value={user.id}>
@@ -23,11 +24,25 @@ const FormPost = () => {
   ));
 
   const onSaveClicked = () => {
-    dispatch(
-      postAdded(title, content, userId)
-    );
-    setTitle("");
-    setContent("");
+    // // dispatch(
+    // //   postAdded(title, content, userId)
+    // // );
+    // dispatch(addNewPost({title,body:content,userId}))
+    // setTitle("");
+    // setContent("");
+    if(canSave){
+      try{
+        setRequestStatus("pending")
+        dispatch(addNewPost({"title":title, "body":content, "userId":userId}))
+        setTitle("")
+        setContent("")
+        setUserId("")
+      }catch(err){
+        console.log("error happen", err)
+      }finally{
+        setRequestStatus("idle")
+      }
+    }
   };
   return (
     <div>
