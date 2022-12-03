@@ -23,8 +23,7 @@ export const addNewPost = createAsyncThunk(
   "posts/addNewPost",
   async (initialData) => {
     try {
-      const response = await axios.post(postUrl, initialData);
-      console.log(response.data)
+      const response = await axios.post(postUrl, initialData)
       return response.data;
     } catch (err) {
       return err.message;
@@ -39,13 +38,13 @@ const postsSlice = createSlice({
       reducer(state, action) {
         state.posts.push(action.payload);
       },
-      prepare(title, content, userId) {
+      prepare(title, body, userId) {
         return {
           payload: {
             id: nanoid(),
             date: new Date().toISOString(),
             title,
-            content,
+            body,
             userId,
             reactions: {
               thumbsup: 0,
@@ -75,7 +74,7 @@ const postsSlice = createSlice({
         console.log("succeeded");
         state.status = "succeeded";
         let min = 1;
-        const date = sub(new Date(), { minutes: min++ }).toISOString();
+        // const date = sub(new Date(), { minutes: min }).toISOString();
         const reactions = {
           thumbsup: 0,
           wow: 0,
@@ -84,19 +83,18 @@ const postsSlice = createSlice({
           coffee: 0,
         };
         action.payload.forEach((element) => {
-          min++;
+          // min++;
           // console.log(min);
-          element.date = date;
+          element.date = sub(new Date(), { minutes: min++ }).toISOString();;
           element.reactions = reactions;
         });
+        
         state.posts = action.payload;
       })
       .addCase(fetchPosts.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
         console.log("error");
-      }).addCase(addNewPost.pending, async (state, action)=>{
-        console.log("pending")
       })
       .addCase(addNewPost.fulfilled, async (state, action) => {
         action.payload.userId = Number(action.payload.userId);
@@ -108,8 +106,7 @@ const postsSlice = createSlice({
           rocket: 0,
           coffee: 0,
         };
-        console.log(action.payload);
-        state.posts.push(action.payload);
+        state.posts.push(action.payload)
       });
   },
 });

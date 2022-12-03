@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { selectAllUsers } from "../users/usersSlice";
-import { addNewPost, postAdded } from "./postsSlice";
+import { addNewPost, } from "./postsSlice";
 
 const FormPost = () => {
   const users = useSelector(selectAllUsers);
@@ -23,17 +23,12 @@ const FormPost = () => {
     </option>
   ));
 
-  const onSaveClicked = () => {
-    // // dispatch(
-    // //   postAdded(title, content, userId)
-    // // );
-    // dispatch(addNewPost({title,body:content,userId}))
-    // setTitle("");
-    // setContent("");
+  const onSaveClicked = () => {// 
     if(canSave){
+      // dispatch(postAdded(title,content,userId))
       try{
         setRequestStatus("pending")
-        dispatch(addNewPost({"title":title, "body":content, "userId":userId}))
+        dispatch(addNewPost({title:title, body:content, userId}))
         setTitle("")
         setContent("")
         setUserId("")
@@ -65,7 +60,7 @@ const FormPost = () => {
           value={userId}
           onChange={onAuthorChange}
           >
-          <option>.....</option>
+          <option></option>
           {renderUsers}
         </select>
         <label className="text-slate-800 font-bold font-mono block mb-1">
