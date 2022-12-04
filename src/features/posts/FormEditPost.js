@@ -1,52 +1,56 @@
 import React, { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
 import { selectAllUsers } from "../users/usersSlice";
-import { addNewPost, } from "./postsSlice";
+import { selectPostById, updatePost } from "./postsSlice";
 
-const FormPost = () => {
+const FormEditPost = () => {
   const users = useSelector(selectAllUsers);
+  const {postId} = useParams()
+  const post = useSelector((state) => selectPostById(state, Number(postId)))
   const dispatch = useDispatch();
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [userId, setUserId] = useState("")
-  const [requestStatus, setRequestStatus] = useState("idle")
-  const navigate = useNavigate()
+  const [title, setTitle] = useState(post.title);
+  const [content, setContent] = useState(post.body);
+  const [userId, setUserId] = useState(post.userId);
+
+  const [requestStatus, setRequestStatus] = useState("idle");
+  const navigate = useNavigate();
 
   const onTitleChange = (e) => setTitle(e.target.value);
   const onContentChange = (e) => setContent(e.target.value);
   const onAuthorChange = (e) => setUserId(e.target.value);
 
-  const canSave = [title,content, userId].every(Boolean) && requestStatus === "idle";
-
+  const canSave =
+    [title, content, userId].every(Boolean) && requestStatus === "idle";
+  const onSaveClicked = () => {
+    //
+    if (canSave) {
+      try {
+        setRequestStatus("pending");
+        dispatch(updatePost({id:post.id, title, body: content, userId, reactions:post.reactions })).unwrap();
+        setTitle("");
+        setContent("");
+        setUserId("");
+        navigate(`/post/${post.id}`);
+      } catch (err) {
+        console.log("error happen", err);
+      } finally {
+        setRequestStatus("idle");
+      }
+    }
+  };
   const renderUsers = users.map((user) => (
     <option className="" key={user.id} value={user.id}>
       {user.name}
     </option>
   ));
-
-  const onSaveClicked = () => {// 
-    if(canSave){
-      try{
-        setRequestStatus("pending")
-        dispatch(addNewPost({title, body:content, userId})).unwrap()
-        setTitle("")
-        setContent("")
-        setUserId("")
-        navigate("/")
-      }catch(err){
-        console.log("error happen", err)
-      }finally{
-        setRequestStatus("idle")
-      }
-    }
-  };
   return (
     <div>
-      <form
-        onSubmit={(e) => e.preventDefault()}
-      >
-        <label className="text-slate-800 font-bold font-mono block mb-1" htmlFor="title">
+      <form onSubmit={(e) => e.preventDefault()}>
+        <label
+          className="text-slate-800 font-bold font-mono block mb-1"
+          htmlFor="title"
+        >
           Title
         </label>
         <input
@@ -57,19 +61,26 @@ const FormPost = () => {
           name="title"
           id="title"
         />
-        <label className="text-slate-800 font-bold font-mono block mb-1" htmlFor="author">
+        <label
+          className="text-slate-800 font-bold font-mono block mb-1"
+          htmlFor="author"
+        >
           Author
         </label>
-        <select className="w-full border rounded-lg px-3 py-2 mb-5 outline-blue-400"
+        <select
+          className="w-full border rounded-lg px-3 py-2 mb-5 outline-blue-400"
           value={userId}
           onChange={onAuthorChange}
           name="author"
           id="author"
-          >
+        >
           <option></option>
           {renderUsers}
         </select>
-        <label className="text-slate-800 font-bold font-mono block mb-1" htmlFor="content">
+        <label
+          className="text-slate-800 font-bold font-mono block mb-1"
+          htmlFor="content"
+        >
           Content
         </label>
         <textarea
@@ -99,4 +110,4 @@ const FormPost = () => {
   );
 };
 
-export default FormPost;
+export default FormEditPost;

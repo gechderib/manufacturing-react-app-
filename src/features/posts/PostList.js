@@ -9,16 +9,16 @@ import {
 } from "./postsSlice";
 
 const PostList = () => {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const postStatus = useSelector(getPostStatus);
   const error = useSelector(getPostError);
   const posts = useSelector(selectAllPosts);
 
-  useEffect(() => {
-    if (postStatus === "idle") {
-      dispatch(fetchPosts());
-    }
-  }, [dispatch, postStatus]);
+  // useEffect(() => {
+  //   if (postStatus === "idle") {
+  //     dispatch(fetchPosts());
+  //   }
+  // }, [dispatch, postStatus]);
 
   let content;
   if (postStatus === "loading") {
