@@ -25,10 +25,9 @@ const FormPost = () => {
 
   const onSaveClicked = () => {// 
     if(canSave){
-      // dispatch(postAdded(title,content,userId))
       try{
         setRequestStatus("pending")
-        dispatch(addNewPost({title:title, body:content, userId}))
+        dispatch(addNewPost({title, body:content, userId})).unwrap()
         setTitle("")
         setContent("")
         setUserId("")
@@ -42,10 +41,7 @@ const FormPost = () => {
   return (
     <div>
       <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          onSaveClicked();
-        }}
+        onSubmit={(e) => e.preventDefault()}
       >
         <label className="text-slate-800 font-bold font-mono block mb-1">
           Title
@@ -80,6 +76,7 @@ const FormPost = () => {
           } p-4 rounded-lg my-4 w-full cursor-pointer`}
           type="submit"
           disabled={!canSave}
+          onClick={onSaveClicked}
         >
           <span className="text-center block text-xl text-white font-semibold">
             Add Post

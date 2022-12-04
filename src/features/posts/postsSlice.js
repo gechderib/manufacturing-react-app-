@@ -23,7 +23,8 @@ export const addNewPost = createAsyncThunk(
   "posts/addNewPost",
   async (initialData) => {
     try {
-      const response = await axios.post(postUrl, initialData)
+      const response = await axios.post(postUrl, initialData);
+      console.log(response.data);
       return response.data;
     } catch (err) {
       return err.message;
@@ -71,10 +72,8 @@ const postsSlice = createSlice({
         console.log("loading");
       })
       .addCase(fetchPosts.fulfilled, (state, action) => {
-        console.log("succeeded");
         state.status = "succeeded";
         let min = 1;
-        // const date = sub(new Date(), { minutes: min }).toISOString();
         const reactions = {
           thumbsup: 0,
           wow: 0,
@@ -83,12 +82,10 @@ const postsSlice = createSlice({
           coffee: 0,
         };
         action.payload.forEach((element) => {
-          // min++;
-          // console.log(min);
-          element.date = sub(new Date(), { minutes: min++ }).toISOString();;
+          element.date = sub(new Date(), { minutes: min++ }).toISOString();
           element.reactions = reactions;
         });
-        
+
         state.posts = action.payload;
       })
       .addCase(fetchPosts.rejected, (state, action) => {
@@ -96,7 +93,7 @@ const postsSlice = createSlice({
         state.error = action.payload;
         console.log("error");
       })
-      .addCase(addNewPost.fulfilled, async (state, action) => {
+      .addCase(addNewPost.fulfilled, (state, action) => {
         action.payload.userId = Number(action.payload.userId);
         action.payload.date = new Date().toISOString();
         action.payload.reactions = {
@@ -106,7 +103,7 @@ const postsSlice = createSlice({
           rocket: 0,
           coffee: 0,
         };
-        state.posts.push(action.payload)
+        state.posts.push(action.payload);
       });
   },
 });
@@ -114,6 +111,8 @@ const postsSlice = createSlice({
 export const selectAllPosts = (state) => state.posts.posts;
 export const getPostStatus = (state) => state.posts.status;
 export const getPostError = (state) => state.posts.error;
+export const selectPostById = (state, postId) =>
+  state.posts.posts.find((post) => post.id == postId);
 
 export const { postAdded, reactionAdded } = postsSlice.actions;
 

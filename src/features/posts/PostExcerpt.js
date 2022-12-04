@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import PostAuthor from './PostAuthor'
 import PostReaction from './PostReaction'
 import TimeAgo from './TimeAgo'
@@ -10,7 +11,8 @@ const PostExcerpt = ({post}) => {
 
     >
       <h3 className="font-bold font-mono">{post.title}</h3>
-      <p className="text-justify">{post.body}</p>
+      <p className="text-justify">{post.body.substring(0,100)}....</p>
+      <Link className='underline' to={`post/${post.id}`}>View Post</Link>
       <div className="flex justify-start mt-2">
         <PostAuthor userId={post.userId} />
         <TimeAgo timeStamps={post.date} />

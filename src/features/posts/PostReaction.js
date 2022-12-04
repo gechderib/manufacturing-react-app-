@@ -5,11 +5,11 @@ import { reactionAdded } from "./postsSlice";
 const PostReaction = ({ post }) => {
   const dispatch = useDispatch();
   const reactions = {
-    thumbsup: "TT",
-    wow: "WW",
-    heart: "HH",
-    rocket: "RR",
-    coffee: "CC",
+    thumbsup: "👍",
+    wow: "😮",
+    heart: "💖",
+    rocket: "🚀",
+    coffee: "☕",
   };
   const reactionButton = Object.entries(reactions).map(([name, emoji]) => {
     return (
